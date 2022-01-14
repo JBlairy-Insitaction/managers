@@ -5,14 +5,18 @@ namespace Insitaction\ManagersBundle\Manager\Request\Adapter;
 use Doctrine\ORM\EntityManagerInterface;
 use Insitaction\ManagersBundle\Manager\Request\Entity\RequestEntityInterface;
 use RuntimeException;
+use stdClass;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class AbstractRequestAdapter implements RequestAdapterInterface
 {
-    /** @var class-string */
+    /** @var class-string<RequestEntityInterface> */
     private string $entityClassName;
+
+    /** @var array<string, mixed>|null */
+    private ?array $extraFields;
 
     /** @var RequestEntityInterface|RequestEntityInterface[] */
     private RequestEntityInterface|array $convertedEntity;
@@ -28,22 +32,58 @@ abstract class AbstractRequestAdapter implements RequestAdapterInterface
         $this->groups = $this->setGroups();
     }
 
+    /**
+     * @param array<string, mixed> $extraFields
+     */
+    public function addExtraFields(array $extraFields): self
+    {
+        $this->extraFields = $extraFields;
+
+        return $this;
+    }
+
     public function process(Request $request): self
     {
+        $data = $this->getDataByMethod($request);
+
         if (true === $this->multiple()) {
             $entities = [];
-            foreach (json_decode($request->getContent(), true) as $entity) {
+
+            foreach ($data as $entity) {
                 $this->validation($entity);
                 $entities[] = $this->serialize(json_encode($entity, JSON_THROW_ON_ERROR), $this->getObject($entity));
             }
         } else {
-            $this->validation(json_decode($request->getContent()));
-            $entities = $this->serialize($request->getContent(), $this->getObject(json_decode($request->getContent())));
+            $this->validation($data);
+            $entities = $this->serialize(json_encode($data, JSON_THROW_ON_ERROR), $this->getObject($data));
         }
 
         $this->convertedEntity = $entities;
 
         return $this;
+    }
+
+    /**
+     * @return array<mixed, mixed>
+     */
+    private function getDataByMethod(Request $request): array
+    {
+        $requestContent = json_decode($request->getContent(), true);
+
+        switch ($request->getMethod()) {
+            case Request::METHOD_POST:
+                if (0 !== $request->request->count()) {
+                    return array_merge($request->request->all(), $this->extraFields);
+                }
+                break;
+            case Request::METHOD_GET:
+                if (0 !== $request->request->count()) {
+                    return array_merge($request->query->all(), $this->extraFields);
+                }
+                break;
+        }
+
+        return array_merge(is_array($requestContent) ? $requestContent : [], $this->extraFields);
     }
 
     private function serialize(string $data, ?RequestEntityInterface $entity): RequestEntityInterface
@@ -66,10 +106,12 @@ abstract class AbstractRequestAdapter implements RequestAdapterInterface
     }
 
     /**
-     * @param array<mixed, mixed> $data
+     * @param array<mixed, mixed>|stdClass $data
      */
-    private function getObject(array $data): ?RequestEntityInterface
+    private function getObject(array|stdClass $data): ?RequestEntityInterface
     {
+        $data = (array)$data;
+
         if (!isset($data['id'])) {
             return null;
         }
@@ -104,7 +146,7 @@ abstract class AbstractRequestAdapter implements RequestAdapterInterface
     }
 
     /**
-     * @return class-string
+     * @return class-string<RequestEntityInterface>
      */
     private function getEntityClassname(): string
     {
@@ -113,6 +155,7 @@ abstract class AbstractRequestAdapter implements RequestAdapterInterface
             throw new RuntimeException(sprintf('The entity "%s" must implement RequestEntityInterface.', $this->entityClassname()));
         }
 
-        return $this->entityClassname();
+        /* @phpstan-ignore-next-line */
+        return $classname;
     }
 }
