@@ -1,0 +1,8 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    Insitaction\ManagersBundle\Manager\Request\RequestManager: ~
+    Insitaction\ManagersBundle\Manager\Request\RequestManagerInterface: '@Insitaction\ManagersBundle\Manager\Request\RequestManager'
