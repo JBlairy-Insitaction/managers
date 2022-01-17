@@ -6,3 +6,6 @@ services:
 
     Insitaction\ManagersBundle\Manager\Request\RequestManager: ~
     Insitaction\ManagersBundle\Manager\Request\RequestManagerInterface: '@Insitaction\ManagersBundle\Manager\Request\RequestManager'
+
+    Insitaction\ManagersBundle\Manager\Request\ProcessedEntity\ProcessedEntity: ~
+    Insitaction\ManagersBundle\Manager\Request\ProcessedEntity\ProcessedEntityInterface: '@Insitaction\ManagersBundle\Manager\Request\ProcessedEntity\ProcessedEntity'
