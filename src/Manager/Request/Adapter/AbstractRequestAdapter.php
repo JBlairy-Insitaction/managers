@@ -4,6 +4,7 @@ namespace Insitaction\ManagersBundle\Manager\Request\Adapter;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Insitaction\ManagersBundle\Manager\Request\Entity\RequestEntityInterface;
+use Insitaction\ManagersBundle\Manager\Request\ProcessedEntity\ProcessedEntityInterface;
 use RuntimeException;
 use stdClass;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,17 +17,15 @@ abstract class AbstractRequestAdapter implements RequestAdapterInterface
     private string $entityClassName;
 
     /** @var array<string, mixed>|null */
-    private ?array $extraFields;
-
-    /** @var RequestEntityInterface|RequestEntityInterface[] */
-    private RequestEntityInterface|array $convertedEntity;
+    private ?array $extraFields = [];
 
     /** @var string[] */
     private array $groups;
 
     public function __construct(
         private SerializerInterface $serializer,
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
+        private ProcessedEntityInterface $processedEntity
     ) {
         $this->entityClassName = $this->getEntityClassname();
         $this->groups = $this->setGroups();
@@ -42,7 +41,7 @@ abstract class AbstractRequestAdapter implements RequestAdapterInterface
         return $this;
     }
 
-    public function process(Request $request): self
+    public function process(Request $request): ProcessedEntityInterface
     {
         $data = $this->getDataByMethod($request);
 
@@ -58,9 +57,9 @@ abstract class AbstractRequestAdapter implements RequestAdapterInterface
             $entities = $this->serialize(json_encode($data, JSON_THROW_ON_ERROR), $this->getObject($data));
         }
 
-        $this->convertedEntity = $entities;
+        $this->processedEntity->setAdaptedEntity($entities);
 
-        return $this;
+        return $this->processedEntity;
     }
 
     /**
@@ -99,12 +98,6 @@ abstract class AbstractRequestAdapter implements RequestAdapterInterface
         return $this->serializer->deserialize($data, $this->entityClassName, 'json', $context);
     }
 
-    /** @return RequestEntityInterface|RequestEntityInterface[] */
-    public function getEntity(): RequestEntityInterface|array
-    {
-        return $this->convertedEntity;
-    }
-
     /**
      * @param array<mixed, mixed>|stdClass $data
      */
@@ -123,26 +116,6 @@ abstract class AbstractRequestAdapter implements RequestAdapterInterface
         }
 
         return $entity;
-    }
-
-    /** @return RequestEntityInterface|RequestEntityInterface[] */
-    public function save(): RequestEntityInterface|array
-    {
-        if (is_array($this->convertedEntity)) {
-            foreach ($this->convertedEntity as $entity) {
-                $this->processSave($entity);
-            }
-        } else {
-            $this->processSave($this->convertedEntity);
-        }
-
-        return $this->convertedEntity;
-    }
-
-    private function processSave(RequestEntityInterface $entity): void
-    {
-        $this->em->persist($entity);
-        $this->em->flush();
     }
 
     /**
