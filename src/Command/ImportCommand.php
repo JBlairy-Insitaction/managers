@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace Insitaction\ManagersBundle\Command;
 
 use Insitaction\ManagersBundle\Manager\Import\ImportManager;
 use Symfony\Component\Console\Attribute\AsCommand;
