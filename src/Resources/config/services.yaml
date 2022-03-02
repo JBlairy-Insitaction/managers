@@ -16,3 +16,5 @@ services:
     Insitaction\ManagersBundle\Manager\Import\ImportManager:
         bind:
             $imports: !tagged_iterator app.manager.import
+
+    Insitaction\ManagersBundle\Command\ImportCommand: ~
