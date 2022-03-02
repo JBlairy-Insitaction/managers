@@ -3,10 +3,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    _instanceof:
-        Insitaction\ManagersBundle\Manager\Import\ImportInterface:
-            tags: ['app.manager.import']
-
     Insitaction\ManagersBundle\Manager\Request\RequestManager: ~
     Insitaction\ManagersBundle\Manager\Request\RequestManagerInterface: '@Insitaction\ManagersBundle\Manager\Request\RequestManager'
 
@@ -15,6 +11,6 @@ services:
 
     Insitaction\ManagersBundle\Manager\Import\ImportManager:
         bind:
-            $imports: !tagged_iterator app.manager.import
+            $imports: !tagged_iterator insitaction.manager.import
 
     Insitaction\ManagersBundle\Command\ImportCommand: ~
