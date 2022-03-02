@@ -4,7 +4,7 @@ services:
         autoconfigure: true
 
     _instanceof:
-        App\Manager\Import\ImportInterface:
+        Insitaction\ManagersBundle\Manager\Import\ImportInterface:
             tags: ['app.manager.import']
 
     Insitaction\ManagersBundle\Manager\Request\RequestManager: ~
@@ -13,6 +13,6 @@ services:
     Insitaction\ManagersBundle\Manager\Request\ProcessedEntity\ProcessedEntity: ~
     Insitaction\ManagersBundle\Manager\Request\ProcessedEntity\ProcessedEntityInterface: '@Insitaction\ManagersBundle\Manager\Request\ProcessedEntity\ProcessedEntity'
 
-    App\Manager\Import\ImportManager:
+    Insitaction\ManagersBundle\Manager\Import\ImportManager:
         bind:
             $imports: !tagged_iterator app.manager.import
