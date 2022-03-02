@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9666819793e3ad47041a13558ebef5b4",
+    "content-hash": "c9ba1941afb51b1883dc5fe2fb6f6d6b",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -1246,6 +1246,90 @@
             "time": "2021-11-05T11:11:14+00:00"
         },
         {
+            "name": "league/csv",
+            "version": "9.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/csv.git",
+                "reference": "9d2e0265c5d90f5dd601bc65ff717e05cec19b47"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/csv/zipball/9d2e0265c5d90f5dd601bc65ff717e05cec19b47",
+                "reference": "9d2e0265c5d90f5dd601bc65ff717e05cec19b47",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "ext-dom": "*",
+                "friendsofphp/php-cs-fixer": "^v3.4.0",
+                "phpstan/phpstan": "^1.3.0",
+                "phpstan/phpstan-phpunit": "^1.0.0",
+                "phpstan/phpstan-strict-rules": "^1.1.0",
+                "phpunit/phpunit": "^9.5.11"
+            },
+            "suggest": {
+                "ext-dom": "Required to use the XMLConverter and or the HTMLConverter classes",
+                "ext-iconv": "Needed to ease transcoding CSV using iconv stream filters"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "9.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/functions_include.php"
+                ],
+                "psr-4": {
+                    "League\\Csv\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ignace Nyamagana Butera",
+                    "email": "nyamsprod@gmail.com",
+                    "homepage": "https://github.com/nyamsprod/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "CSV data manipulation made easy in PHP",
+            "homepage": "https://csv.thephpleague.com",
+            "keywords": [
+                "convert",
+                "csv",
+                "export",
+                "filter",
+                "import",
+                "read",
+                "transform",
+                "write"
+            ],
+            "support": {
+                "docs": "https://csv.thephpleague.com",
+                "issues": "https://github.com/thephpleague/csv/issues",
+                "rss": "https://github.com/thephpleague/csv/releases.atom",
+                "source": "https://github.com/thephpleague/csv"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/nyamsprod",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-01-04T00:13:07+00:00"
+        },
+        {
             "name": "psr/cache",
             "version": "3.0.0",
             "source": {
@@ -1441,6 +1525,58 @@
                 "source": "https://github.com/php-fig/log/tree/2.0.0"
             },
             "time": "2021-07-14T16:41:46+00:00"
+        },
+        {
+            "name": "shuchkin/simplexlsx",
+            "version": "1.0.14",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shuchkin/simplexlsx.git",
+                "reference": "7962ef56c5cc8be916ffd5cb9e8375f7fbd0b5a4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shuchkin/simplexlsx/zipball/7962ef56c5cc8be916ffd5cb9e8375f7fbd0b5a4",
+                "reference": "7962ef56c5cc8be916ffd5cb9e8375f7fbd0b5a4",
+                "shasum": ""
+            },
+            "require": {
+                "ext-libxml": "*",
+                "ext-mbstring": "*",
+                "ext-simplexml": "*",
+                "ext-zlib": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/SimpleXLSX.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sergey Shuchkin (SMSPILOT)",
+                    "email": "sergey.shuchkin@gmail.com",
+                    "homepage": "https://github.com/shuchkin"
+                }
+            ],
+            "description": "Parse and retrieve data from Excel XLSx files. MS Excel 2007 workbooks PHP reader.",
+            "homepage": "https://github.com/shuchkin/simplexlsx",
+            "keywords": [
+                "backend",
+                "excel",
+                "parser",
+                "php",
+                "xlsx"
+            ],
+            "support": {
+                "issues": "https://github.com/shuchkin/simplexlsx/issues",
+                "source": "https://github.com/shuchkin/simplexlsx/tree/1.0.14"
+            },
+            "time": "2022-03-01T16:11:22+00:00"
         },
         {
             "name": "symfony/cache",

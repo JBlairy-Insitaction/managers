@@ -2,10 +2,17 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
-        public: true
+
+    _instanceof:
+        App\Manager\Import\ImportInterface:
+            tags: ['app.manager.import']
 
     Insitaction\ManagersBundle\Manager\Request\RequestManager: ~
     Insitaction\ManagersBundle\Manager\Request\RequestManagerInterface: '@Insitaction\ManagersBundle\Manager\Request\RequestManager'
 
     Insitaction\ManagersBundle\Manager\Request\ProcessedEntity\ProcessedEntity: ~
     Insitaction\ManagersBundle\Manager\Request\ProcessedEntity\ProcessedEntityInterface: '@Insitaction\ManagersBundle\Manager\Request\ProcessedEntity\ProcessedEntity'
+
+    App\Manager\Import\ImportManager:
+        bind:
+            $imports: !tagged_iterator app.manager.import
