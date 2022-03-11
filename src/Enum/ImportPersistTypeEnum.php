@@ -1,5 +1,7 @@
 <?php
 
+namespace Insitaction\Enum;
+
 class ImportPersistTypeEnum
 {
     public const CREATE = 'create';

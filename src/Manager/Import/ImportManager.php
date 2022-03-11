@@ -73,7 +73,8 @@ final class ImportManager
                 $datas = SimpleXLSX::parse($filePath)->rows();
                 break;
             case 'text/csv':
-                $datas = Reader::createFromPath($filePath, 'r')->jsonSerialize();
+            case 'application/csv':
+            $datas = Reader::createFromPath($filePath, 'r')->jsonSerialize();
                 break;
             default:
                 throw new Exception('You need to implement getData method for mimeType : ' . mime_content_type($filePath));
