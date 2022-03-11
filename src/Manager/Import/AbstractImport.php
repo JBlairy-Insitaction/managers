@@ -61,7 +61,8 @@ abstract class AbstractImport implements ImportInterface
     private function getEntity(array $row): ?ImportableEntityInterface
     {
         $queryBuilder = $this->em->createQueryBuilder()
-            ->select($this->getClass())
+            ->select('entity')
+            ->from($this->getClass(), 'entity')
             ->addCriteria(
                 Criteria::create()->where(
                     Criteria::expr()->eq($this->getPropertyIdentifier(), $row[$this->getColumnIdentifier()])
