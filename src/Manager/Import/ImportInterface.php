@@ -20,12 +20,6 @@ interface ImportInterface
      */
     public function getClass(): string;
 
-    public function create(): void;
-
-    public function update(): void;
-
-    public function createOrUpdate(): void;
-
     /** @param array<int, array<int, string>> $data */
     public function run(array $data): void;
 
