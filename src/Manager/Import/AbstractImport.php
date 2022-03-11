@@ -14,12 +14,9 @@ abstract class AbstractImport implements ImportInterface
 
     private bool $skipErrors;
 
-    private ?string $mode;
-
     public function __construct(private EntityManagerInterface $em)
     {
         $this->skipErrors = false;
-        $this->mode = null;
     }
 
     public function support(string $className): bool
@@ -41,11 +38,7 @@ abstract class AbstractImport implements ImportInterface
             throw new Exception($this->getClass() . ' must be of type ' . ImportableEntityInterface::class);
         }
 
-        if (null === $this->mode) {
-            throw new Exception('You need to define a mode first');
-        }
-
-        switch ($this->mode) {
+        switch ($this->setMode()) {
             case ImportPersistTypeEnum::CREATE:
                 $this->createMode($datas);
                 break;
