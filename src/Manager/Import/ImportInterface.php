@@ -3,6 +3,7 @@
 namespace Insitaction\ManagersBundle\Manager\Import;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 
 interface ImportInterface
 {
@@ -19,18 +20,25 @@ interface ImportInterface
      */
     public function getClass(): string;
 
-    /** @param array<int, array<int, string>> $data */
-    public function create(array $data): void;
+    public function create(): void;
+
+    public function update(): void;
+
+    public function createOrUpdate(): void;
 
     /** @param array<int, array<int, string>> $data */
-    public function update(array $data): void;
+    public function run(array $data): void;
 
     /** @param array<int, string> $row */
     public function loadEntityFromArray(array $row, ImportableEntityInterface $entity): void;
 
     public function getOffset(): int;
 
+    public function queryBuilder(QueryBuilder $queryBuilder): void;
+
     public function getPropertyIdentifier(): string;
 
     public function getColumnIdentifier(): int;
+
+    public function getMode(): ?string;
 }

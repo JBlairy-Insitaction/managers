@@ -85,22 +85,32 @@ final class ImportManager
         return $this;
     }
 
-    public function create(): void
+    public function run(): void
     {
         if (null === $this->import) {
             throw new Exception('You need to init manager first.');
         }
 
-        $this->import->create($this->datas);
+        if (null === $this->import->getMode()) {
+            throw new Exception('You need to set mode first.');
+        }
+
+        $this->import->run($this->datas);
+    }
+
+    public function create(): void
+    {
+        $this->import->create();
     }
 
     public function update(): void
     {
-        if (null === $this->import) {
-            throw new Exception('You need to init manager first.');
-        }
+        $this->import->update();
+    }
 
-        $this->import->update($this->datas);
+    public function createAndUpdate(): void
+    {
+        $this->import->createOrUpdate();
     }
 
     public function skipErrors(): self
