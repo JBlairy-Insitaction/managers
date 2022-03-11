@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
-use Insitaction\Enum\ImportPersistTypeEnum;
+use Insitaction\ManagersBundle\Enum\ImportPersistTypeEnum;
 
 abstract class AbstractImport implements ImportInterface
 {

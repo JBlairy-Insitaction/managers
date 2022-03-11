@@ -1,6 +1,6 @@
 <?php
 
-namespace Insitaction\Enum;
+namespace Insitaction\ManagersBundle\Enum;
 
 class ImportPersistTypeEnum
 {
