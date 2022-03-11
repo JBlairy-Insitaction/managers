@@ -33,26 +33,6 @@ abstract class AbstractImport implements ImportInterface
         return false;
     }
 
-    public function getMode(): ?string
-    {
-        return $this->mode;
-    }
-
-    public function create(): void
-    {
-        $this->mode = ImportPersistTypeEnum::CREATE;
-    }
-
-    public function update(): void
-    {
-        $this->mode = ImportPersistTypeEnum::UPDATE;
-    }
-
-    public function createOrUpdate(): void
-    {
-        $this->mode = ImportPersistTypeEnum::CREATE_AND_UPDATE;
-    }
-
     /** @param array<int, array<int, string>> $datas */
     public function run(array $datas): void
     {

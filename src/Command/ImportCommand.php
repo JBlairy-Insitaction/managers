@@ -38,7 +38,7 @@ class ImportCommand extends Command
             ->setIo($io)
             ->skipErrors()
             ->getData($input->getArgument('path'))
-            ->update()
+            ->run()
         ;
         $io->success('Import Complete.');
 

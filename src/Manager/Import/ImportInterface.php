@@ -40,5 +40,5 @@ interface ImportInterface
 
     public function getColumnIdentifier(): int;
 
-    public function getMode(): ?string;
+    public function setMode(): string;
 }
