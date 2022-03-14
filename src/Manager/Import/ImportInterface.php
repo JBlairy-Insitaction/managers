@@ -28,11 +28,12 @@ interface ImportInterface
 
     public function getOffset(): int;
 
-    public function queryBuilder(QueryBuilder $queryBuilder): void;
+    /** @param array<int, string> $row */
+    public function queryBuilder(QueryBuilder $queryBuilder, array $row): void;
 
-    public function getPropertyIdentifier(): string;
+    public function getPropertyIdentifier(): ?string;
 
-    public function getColumnIdentifier(): int;
+    public function getColumnIdentifier(): ?int;
 
     public function setMode(): string;
 }

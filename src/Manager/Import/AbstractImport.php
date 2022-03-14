@@ -10,6 +10,8 @@ use Insitaction\ManagersBundle\Enum\ImportPersistTypeEnum;
 
 abstract class AbstractImport implements ImportInterface
 {
+    public const ALIAS = 'entity';
+
     private ImportManager $importManager;
 
     private bool $skipErrors;
@@ -17,6 +19,16 @@ abstract class AbstractImport implements ImportInterface
     public function __construct(private EntityManagerInterface $em)
     {
         $this->skipErrors = false;
+    }
+
+    public function getColumnIdentifier(): ?int
+    {
+        return null;
+    }
+
+    public function getPropertyIdentifier(): ?string
+    {
+        return null;
     }
 
     public function support(string $className): bool
@@ -53,26 +65,43 @@ abstract class AbstractImport implements ImportInterface
         $this->em->flush();
     }
 
-    public function queryBuilder(QueryBuilder $queryBuilder): void
+    /** @param array<int, string> $row */
+    public function queryBuilder(QueryBuilder $queryBuilder, array $row): void
     {
+        if (null === $this->getColumnIdentifier() || null === $this->getPropertyIdentifier()) {
+            throw new Exception('You need to implement getColumnIdentifier and getPropertyIdentifier or override queryBuilder.');
+        }
+
+        $queryBuilder->addCriteria(
+            Criteria::create()->where(
+                Criteria::expr()->eq($this->getPropertyIdentifier(), $row[$this->getColumnIdentifier()])
+            )
+        );
     }
 
     /** @param array<int, string> $row */
     private function getEntity(array $row): ?ImportableEntityInterface
     {
         $queryBuilder = $this->em->createQueryBuilder()
-            ->select('entity')
-            ->from($this->getClass(), 'entity')
-            ->addCriteria(
-                Criteria::create()->where(
-                    Criteria::expr()->eq($this->getPropertyIdentifier(), $row[$this->getColumnIdentifier()])
-                )
-            )
-            ;
+            ->select(self::ALIAS)
+            ->from($this->getClass(), self::ALIAS)
+        ;
 
-        $this->queryBuilder($queryBuilder);
+        $this->queryBuilder($queryBuilder, $row);
 
-        return $queryBuilder->getQuery()->getOneOrNullResult();
+        try {
+            $result = $queryBuilder->getQuery()->getOneOrNullResult();
+        } catch (Exception) {
+            $ids = [];
+            /** @var ImportableEntityInterface $result */
+            foreach ($queryBuilder->getQuery()->getResult() as $result) {
+                $ids[] = $result->getUniqueIdentifier();
+            }
+            $this->importManager->log('Multiple results found for identifiers : ' . json_encode($ids));
+            throw new Exception('Multiple results found for identifiers : ' . json_encode($ids));
+        }
+
+        return $result;
     }
 
     /** @param array<int, array<int, string>> $datas */
@@ -86,6 +115,7 @@ abstract class AbstractImport implements ImportInterface
 
             $this->loadEntityFromArray($data, $entity);
             $this->em->persist($entity);
+            $this->importManager->log('Created or updated ' . $this->getClass() . ' identified by ' . $entity->getUniqueIdentifier());
         }
     }
 
@@ -97,6 +127,7 @@ abstract class AbstractImport implements ImportInterface
 
             $this->loadEntityFromArray($data, $entity);
             $this->em->persist($entity);
+            $this->importManager->log('Created ' . $this->getClass() . ' identified by ' . $entity->getUniqueIdentifier());
         }
     }
 
@@ -107,7 +138,7 @@ abstract class AbstractImport implements ImportInterface
             $entity = $this->getEntity($data);
 
             if (!$entity instanceof ImportableEntityInterface) {
-                $message = 'Cant find ' . $this->getClass() . ' entity with ' . $this->getPropertyIdentifier() . ' = ' . $data[$this->getColumnIdentifier()];
+                $message = 'Cant find ' . $this->getClass() . ' entity with given data.';
 
                 if ($this->skipErrors) {
                     $this->importManager->log($message);
@@ -118,12 +149,18 @@ abstract class AbstractImport implements ImportInterface
             }
 
             $this->loadEntityFromArray($data, $entity);
+            $this->importManager->log('Updated ' . $this->getClass() . ' identified by ' . $entity->getUniqueIdentifier());
         }
     }
 
     public function setManager(ImportManager $manager): void
     {
         $this->importManager = $manager;
+    }
+
+    public function getManager(): ImportManager
+    {
+        return $this->importManager;
     }
 
     public function getOffset(): int
