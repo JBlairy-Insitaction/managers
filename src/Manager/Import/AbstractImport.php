@@ -16,7 +16,7 @@ abstract class AbstractImport implements ImportInterface
 
     private bool $skipErrors;
 
-    public function __construct(private EntityManagerInterface $em)
+    public function __construct(protected EntityManagerInterface $em)
     {
         $this->skipErrors = false;
     }
